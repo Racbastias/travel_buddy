@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date, datetime
 import re
 
 # Create your models here.
@@ -9,10 +10,10 @@ class UserManager(models.Manager):
 
         errors = {}
 
-        if len(postData['name']) < 2:
-            errors['name'] = "The name must be 2 letters at least";
-        if len(postData['nickname']) < 2:
-            errors['nickname'] = "The last name must be 2 letters at least";
+        if len(postData['name']) < 3:
+            errors['name'] = "The name must be 3 letters at least";
+        if len(postData['nickname']) < 3:
+            errors['nickname'] = "The username name must be 3 letters at least";
         if not regex.match(postData['email']):
             errors['email'] = "invalid e-mail"
         if not letters.match(postData['name']):
@@ -23,10 +24,32 @@ class UserManager(models.Manager):
             errors['password_confirm'] = "Both Passwords must be equals "
         return errors
 
+class TravelManager(models.Manager):
+    def basicvalidator(self, postData):
+        today = date.today().strftime("%Y-%m-%d")
+        start_date = postData['start_date']
+        errors = {}
+
+        if len(postData['destination']) == "":
+            errors['destination'] = "The destination must not be empty";
+        if len(postData['description']) == "":
+            errors['description'] = "The description must not be empty";
+        if (postData['start_date']) < today:
+            errors["start_date"] = "The trip can't start before today!"
+        if (postData['end_date']) < start_date :
+            errors["end_date"] = "The trip must finish after the start!"
+        if (postData['start_date']) == "":
+            errors["start_date"] = "The datefield can't be empty"
+        if (postData['end_date']) == "":
+            errors["end_date"] = "The datefield can't be empty"
+
+        return errors
+
 class User(models.Model):
     name = models.CharField(max_length=100)
+    nickname = models.CharField(max_length=100)
     email = models.EmailField(max_length=255, unique=True)
-    avatar = models.URLField(default='https://cdn.dribbble.com/users/1588659/screenshots/5955445/dribbble_4x.png')
+    avatar = models.URLField(default='https://toppng.com/uploads/preview/roger-berry-avatar-placeholder-11562991561rbrfzlng6h.png')
     password = models.CharField(max_length=70)
     
     created_at = models.DateTimeField(auto_now_add=True)
@@ -39,28 +62,31 @@ class User(models.Model):
     def __repr__(self):
         return f"{self.nickname}"
 
-
-class Travelers(models.Model):
-    name = models.CharField(max_length=100, unique = True)
-    
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return f"{self.name}"
-    def __repr__(self):
-        return f"{self.name}"
-
 class Travel(models.Model):
-    destination = models.CharField(max_length=100, unique = True)
-    traveler = models.ForeignKey(Travelers, related_name="travels", on_delete=models.CASCADE)
+    destination = models.CharField(max_length=250)
+    description = models.TextField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    travelinfo = models.ForeignKey(User, related_name='travels', on_delete=models.CASCADE)
     # authors
     # reviews
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+    objects = TravelManager()
     def __str__(self):
         return f"{self.destination}"
     def __repr__(self):
         return f"{self.destination}"
+
+class Traveler(models.Model):
+    infotraveler = models.ForeignKey(User, related_name='infotravelers', on_delete=models.CASCADE)
+    travels = models.ForeignKey(Travel, related_name='travelers', on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.infotraveler}"
+    def __repr__(self):
+        return f"{self.infotraveler}"

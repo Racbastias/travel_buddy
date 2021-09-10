@@ -38,7 +38,7 @@ def login(request):
             'avatar': user.avatar
         }
         messages.success(request, f'Welcome {user.nickname}')
-        return redirect('/books')
+        return redirect('/travels')
 
 def register(request):
     if request.method == 'GET':
@@ -78,4 +78,4 @@ def register(request):
             'avatar': avatar
         }
         messages.success(request, 'New user has been created')
-        return redirect('/books')
+        return redirect('/travels')

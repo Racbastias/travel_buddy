@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+{% block title%} Add Book and Review {% endblock %}
+{% block buttons %}<a class="btn btn-outline-primary mx-1" href="/travels">Home</a>{% endblock%}
+
+{% block wallpaper%}style="background-image: url(https://c.wallhere.com/photos/7d/b6/snow_mist_fog_road_tracks_moors_saddleworthmoor_sigma1020mm-771880.jpg!d); background-size:cover; background-repeat:no-repeat;"{% endblock %}
+
+{% block content %}
+            <div class="row justify-content-center text-center my-5">
+                <div class="col-5"> 
+                    <h2> Add a Trip </h2>
+                    <form class="row g-3 my-3" action="/travels_add" method="POST">
+                    {% csrf_token %}
+                        <div class="col-md-12">
+                            <label for="where" class="form-label">Destination</label>
+                            <input type="text" name="destination" class="form-control" id="newdestine" placeholder="Example: San Pedro de Atacama" value="" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="travel-descr" class="form-label">Description</label>
+                            <textarea name="description" class="form-control" id="newdesc" value="" placeholder="Long way to the north" rows="3" required></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="from-when" class="form-label">Travel Date From</label>
+                            <input type="date" id="startdate" name="start_date" value="" class="mt-1 py-1 px-2 border border-1 rounded">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="to-when" class="form-label">Travel Date From</label>
+                            <input type="date" id="enddate" name="end_date" value="" class="mt-1 py-1 px-2 border border-1 rounded">
+                        </div>
+                        <div class="col-12 text-end">
+                            <button class="btn btn-outline-success" type="submit">Add the Trip </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+{% endblock %}

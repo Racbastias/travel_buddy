@@ -3,10 +3,11 @@
 {% block content %}
             <div class="row my-5 justify-content-between text-center text-light">
                 <div class="col-12"> 
-                    <h1 class="fs-1"> Welcome to the Library </h1>
+                    <h1 class="fs-1 text-dark"> Long Way Travel </h1>
                 </div>
             </div>
             <div class="row justify-content-center text-light">
+                <hr><hr><hr>
                 <div class="col-5 my-5">
                     <h2 class"fs-2 my-3"> Register new user </h2>
                     <form class="row g-3" action="/register" method="POST">
@@ -16,14 +17,14 @@
                             <input type="text" name="name" class="form-control" id="newfirstname" value="" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="nickname" class="form-label">Alias</label>
+                            <label for="nickname" class="form-label">Username</label>
                             <input type="text" name="nickname" class="form-control" id="newnickname" value="" required>
                         </div>
                         <div class="col-md-4">
                             <label for="genders" class="form-label">Gender</label>
                             <select class="form-select" id="avatar" name="gender" required>
                                 <option selected disabled value="">Choose...</option>
-                                <option value="https://www.terrainhopperusa.com/wp-content/uploads/2019/01/avatar-woman.png">Female</option>
+                                <option value="https://i.pinimg.com/originals/aa/0d/bc/aa0dbc1f0f8698666e8baae785177a27.jpg">Female</option>
                                 <option value="https://cdn.dribbble.com/users/1588659/screenshots/5955445/dribbble_4x.png">Male</option>
                             </select>
                         </div>
@@ -39,7 +40,7 @@
                             <label for="pass" class="form-label">Confirm Password</label>
                             <input type="password" name="password_confirm" class="form-control" id="passconfirm" value="" required>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 text-end">
                             <button class="btn btn-primary" type="submit">Submit</button>
                         </div>
                     </form>
@@ -62,7 +63,9 @@
                                 <input type="password" name="password" value=""class="form-control" id="inputPassword3">
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success">Login</button>
+                        <div class="col-12 text-end">
+                            <button type="submit" class="btn btn-success">Login</button>
+                        </div>
                     </form>
                 </div>
             </div>

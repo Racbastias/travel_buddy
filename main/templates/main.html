@@ -1,40 +1,62 @@
 {% extends 'index.html' %}
-{% block title%} Books Home {% endblock %}
-
-{% block wallpaper%}style="background-image: url(https://wallpaperaccess.com/full/1692764.jpg); background-size:cover; background-repeat:no-repeat;"{% endblock %}
+{% block title%} Travel Dashboard {% endblock %}
+{% block buttons%}{% endblock %}
+{% block wallpaper%}style="background-image: url(https://c.wallhere.com/photos/7d/b6/snow_mist_fog_road_tracks_moors_saddleworthmoor_sigma1020mm-771880.jpg!d); background-size:cover; background-repeat:no-repeat;"{% endblock %}
 
 {% block content %}
             <div class="row justify-content-between text-start my-3">
-                <h4 class="text-dark"> Recent Book Reviews </h4>
-                <br>
-                <div class="col-6"> 
-                    {% for review in reviews %}
-                    <div class="card mb-2" style="max-width: 100%">
-                        <div class="row g-0 align-items-center">
-                            <div class="col-md-3 p-3">
-                                <img src="{{review.user.avatar}}" class="img-fluid rounded-start" alt="...">
-                            </div>
-                            <div class="col-md-9">
-                                <div class="card-body">
-                                    <a class="card-title fw-bold" style="text-decoration:none" href="/books/{{review.book.id}}">{{review.book.author}} - {{review.book.title}} </a>
-                                    <p class="rating">Rating: {{review.rating}} <i class="fas fa-star"></i> from 5 </p>
-                                    <p><a href="/users/{{review.user.id}}" class="fw-bold" style="text-decoration:none">{{review.user.nickname}}</a> says: {{review.review}}</p>
-                                    <p class="card-text text-end"><small class="text-muted">Posted on {{review.updated_at}}</small></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <div class="col-6">
-                    <h4> Other Books with Reviews:</h4>
-                    <div class="row justify-content-center text-start" data-bs-spy="scroll" style="height: 30rem; overflow-y: scroll" id="actions">
-                        <div class="col-12">
-                            {% for book in books %}
-                            <ul class="mt-3">
-                                <li><a href="/books/{{book.id}}" class="fw-bold" style="text-decoration:none">{{book.author}} - {{book.title}}</a></li>
-                            </ul>
+                <h2>Hello: <span class="fw-bold">{{user.nickname}}!!</span></h2>
+                <hr>
+                <div class='col-12'>
+                    <h1 class='fs-1 my-3'>Your Trip Schedules</h1>
+                    <table class="table table-light table-hover my-5 text-center">
+                        <thead>
+                            <tr>
+                            <th scope="col">Destination</th>
+                            <th scope="col">Travel Start Date</th>
+                            <th scope="col">Travel End Date</th>
+                            <th scope="col">Plan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="overflow-scroll">
+                            {% for travel in usertravels %}
+                            <tr>
+                            <td><a href="/travels/destination/{{travel.id}}" style="text-decoration:None">{{travel.destination}}</a></td>
+                            <td>{{travel.start_date}}</td>
+                            <td>{{travel.end_date}}</td>
+                            </tr>
                             {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class='col-12'>
+                    <h1 class='fs-1 my-3'>Other User's Travel Plans</h1>
+                    <table class="table table-light table-hover my-5 text-center">
+                        <thead>
+                            <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Destination</th>
+                            <th scope="col">Travel Start Date</th>
+                            <th scope="col">Travel End Date</th>
+                            <th scope="col">Do you Want to Join?</th>
+                            </tr>
+                        </thead>
+                        <tbody class="overflow-scroll">
+                            {% for othertravel in travels %}
+                            <tr>
+                            <td>{{othertravel.travelinfo.nickname}}<td>
+                            <td><a href="/travels/destination/{{othertravel.id}}" style="text-decoration:None">{{othertravel.destination}}</a></td>
+                            <td>{{othertravel.start_date}}</td>
+                            <td>{{othertravel.end_date}}</td>
+                            <td><a href="#" data-href="/travels" title="join" class="lnk-del btn btn-outline-primary" data-title="join" data-bs-toggle="modal" data-bs-target="#join">Join</a><td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                    <div class="row justify-content-end">
+                        <div class="col-auto text-end">
+                            <h5><a href="/travels/add" class="btn btn-outline-primary"> Add Travel Plan  </a></h5>
                         </div>
                     </div>
                 </div>
