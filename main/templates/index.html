@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% load static %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://kit.fontawesome.com/b57dc3c003.js" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="icon"  type="image/png" href="https://i1.wp.com/crystaljag.com/write-on/wp-content/uploads/2016/01/cropped-favicon512x512-1.png">
+        <title>{% block title %} Welcome {% endblock%} </title>
+    </head>
+
+    <body class="p-0 m-0" {% block wallpaper%}style="background-image: url(https://img.gta5-mods.com/q95/images/2018-honda-cb500x/b28224-20180720205404_1.jpg); background-size:cover; background-repeat:repeat;"{% endblock %}>
+        <!-- modals -->
+        <!-- new author -->
+        <div class="modal fade" id="new-author" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form class="modal-content" method="POST" action="/new_author">
+                    {% csrf_token%}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add new author</h5>
+                    </div>
+                    <div class="modal-body">
+                        <label for="book_title" class="form-label">Author name</label>
+                        <input type="text" name="newauthor" class="form-control" id="newauthorname" placeholder="Example: Stephen King" value="" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-outline-success btn-ok">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- modal delete -->
+        <div class="modal fade" id="confirm-delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Eliminar</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p> Are you sure you want to delete this </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <a class="btn btn-outline-danger btn-ok">Delete this</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Navbar -->
+        {% if user.avatar == None %}
+        {% else %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <img src="{{user.avatar}}" style="width:40px; height:40px" class="mx-1">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/users/{{user.id}}">Welcome Home <span class="fw-bold">{{user.nickname}}</a>
+                        </li>
+                    </ul>
+                <div class="d-flex">
+                    {% block buttons %}<a class="btn btn-outline-success mx-1" href="/books/add">Add Book and Review</a>{% endblock%}
+                    <a class="btn btn-outline-danger mx-1" href="/logout">Logout</a>
+                </div>
+                </div>
+            </div>
+        </nav>
+        {% endif %}
+        <!-- container blocks -->
+        <div class='container p-0 m-auto'>
+            {% block content%}
+
+            {% endblock %}
+        </div>
+        <!-- scripts -->
+        <!-- toastr messages -->
+        <script>
+            {% if messages %}
+                {% for message in messages %}
+                toastr.{{message.tags}}("{{ message }}")
+                {% endfor %}
+            {% endif %}
+        </script>
+        <!-- delete modal -->
+        <script>
+            $('#confirm-delete').on('show.bs.modal', function(e) {
+                $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+            });
+        </script>
+    </body>
+</html>

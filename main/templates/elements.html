@@ -1,0 +1,319 @@
+Elements for HTML Websites by RAC
+
+MODALS:
+    EDIT MODAL (id=confirm-edit)
+        HTML
+            <div class="modal fade" id="confirm-edit" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form class="modal-content" method="POST" action="#" id="edit-comment-form">
+                        {% csrf_token%}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ModalLabel">Editar</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3 text-start">
+                            <label for="text-area" class="form-label">What do you want to edit {{user.first_name}}</label>
+                            <textarea id="text-edit" class="form-control" name="comment" value="" rows="3"></textarea>
+                        </div>
+                            </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-outline-success btn-ok">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        JS
+            <script>
+                    $('.lnk-edit').on('click',function(){
+                        const id = $(this).attr('data-id')
+                        const text = $('#comment-'+id).text()
+                        const action = $(this).attr('data-action')
+                        console.log(id, text)
+                        $('#text-edit').text(text)
+                        $('#edit-comment-form').attr('action', action)
+                        console.log(action)
+                    })
+                    $('.lnk-editp').on('click', function(){
+                        const id = $(this).attr('data-id')
+                        const text = $('#publish-'+id).text()
+                        const action = $(this).attr('data-action')
+                        console.log(id, text)
+                        $('#text-editp').text(text)
+                        $('#edit-publish-form').attr('action', action)
+                        console.log(action)
+                    })
+            </script>
+    DELETE MODAL (id=confirm-delete)
+        HTML
+            <div class="modal fade" id="confirm-delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Eliminar</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p> Are you sure you want to delete this </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                            <a class="btn btn-outline-danger btn-ok">Delete this</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        JS
+            <script>
+                $('#confirm-delete').on('show.bs.modal', function(e) {
+                    $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+                });
+            </script>
+
+TOASTR:
+    JS
+        <script>
+            {% if messages %}
+                {% for message in messages %}
+                toastr.{{message.tags}}("{{ message }}")
+                {% endfor %}
+            {% endif %}
+        </script>
+    
+NAVBAR (Name User, Logout, with avatar, in INDEX TEMPLATE without data):
+    HTML
+        <nav class="navbar navbar-light bg-transparent">
+            <div class="container-fluid">
+                {%if user.avatar == None %}
+                {% else %}
+                <p class="text-light">Welcome <span class="fs-5 fw-bold">{{user.first_name}} {{user.last_name}}</span></p>
+                <a class="btn btn-outline-danger" href="/logout">Logout</a>
+                {% endif %}
+            </div>
+        </nav>
+    
+JSONRESPONSE POST (form-publish class, method POST, publish name):
+    JS
+        <script>
+            $('#form_publish').on('submit', function(event){
+                event.preventDefault()
+                $.ajax({
+                    method: 'POST',
+                    url: '/publish',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        publish: $('#publish').val(),
+                    },
+                    success: function(data){
+                        // se deja el formulario en blanco
+                        $('#publish').val('')
+                        console.log(data)
+                        // se agrega el post
+                        $('#publishers').prepend(`
+                        HTML WITH LABELS ${}
+                        `)
+                    },
+                    error: function(error){
+                        console.log('error', error)
+                    }
+                })
+            })
+        </script>
+    
+FORMS:
+    FORM POST-TYPE WITH TEXT-AREA (FACEBOOK TYPE):
+        HTML
+            <div class="row justify-content-center text-center">
+                <div class="col-8 my-5 text-light text-center">
+                    <form action="/publish" method="POST" id="form_publish">
+                    {% csrf_token %}
+                        <div class="mb-3 text-start">
+                            <label for="text-area" class="form-label">What are you thinking {{user.first_name}}</label>
+                            <textarea class="form-control" name="publish" value="" id="publish" rows="3"></textarea>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-outline-success ">Do it!</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        
+    FORM COMMENT-TYPE WITH TEXT AREA (FACEBOOK TYPE):
+        HTML
+            <div class="card mb-3" style="max-width: 100%">
+                <div class="row g-0 align-items-center">
+                    <div class="col-md-3 p-3">
+                        <img src="{{AVATAR ELEMENT}}" class="img-fluid rounded-start" alt="..." style="width:10rem; height:10rem;">
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card-body">
+                            <h5 class="card-title">{{FIRST_NAME}} {{LAST_NAME}} </h5>
+                            <p class="card-text" id="ELEMENT-{{ID}}">{{TEXT}}</p>
+                            <p class="card-text"><small class="text-muted">Last updated {{DATE}}</small></p>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end bg-light">
+                        <a href="#" data-id="{{ID}}" data-action="/EDIT ROUTE/{{ID}}" title="Edit" class="lnk-editp btn btn-outline-success" data-title="editp" data-bs-toggle="modal" data-bs-target="#confirm-publish">Edit</a>
+                        <a href="#" data-href="/DELETE ROUTE/{{ID}}" title="Delete" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</a>
+                    </div>
+                </div>
+            </div>
+
+    SHOW POST-TYPE WITH TEXT-AREA (FACEBOOK TYPE):
+        HTML
+            <div class="card mb-3" style="max-width: 100%">
+                <div class="row g-0 align-items-center">
+                    <div class="col-md-3 p-3">
+                        <img src="{{AVATAR}}" class="img-fluid rounded-start" alt="..." style="width:10rem; height:10rem;">
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card-body">
+                            <h5 class="card-title">{{FIRST_NAME}} {{LAST-NAME}} </h5>
+                            <p class="card-text" id="ELEMENT-{{ID}}">{{TEXT}}</p>
+                            <p class="card-text"><small class="text-muted">Last updated {{UPDATED_AT}}</small></p>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end bg-light">
+                        <a href="#" data-id="{{ID}" data-action="/EDIT ROUTE/{{ID}}" title="Edit" class="lnk-editp btn btn-outline-success" data-title="editp" data-bs-toggle="modal" data-bs-target="#confirm-publish">Edit</a>
+                        <a href="#" data-href="/DELETE ROUTE/{{ID}}" title="Delete" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</a>
+                    </div>
+                    <div class="col-6"></div>
+                </div>
+            </div>
+
+    SHOW COMMENT-TYPE WITH THEXT-AREA (FACEBOOK TYPE):
+        HTML:
+            <div class="row g-0 justify-content-end align-items-center">
+                <div class="col-md-3 p-3">
+                    <img src="{{AVATAR}}" class="img-fluid rounded-start" alt="..." style="width:5rem; height:5rem;">
+                </div>
+                <div class="col-md-9">
+                    <div class="card-body">
+                        <h5 class="card-title">{{FIRST_NAME}} {{LAST_NAME}} </h5>
+                        <p class="card-text" id="ELEMENT-{{ID}}">{{TEXT}}</p>
+                        <p class="card-text"><small class="text-muted">Last updated {{UPDATED_AT}}</small></p>
+                    </div>
+                </div>
+                <div class="card-footer text-end bg-light">
+                    <a href="#" data-id="{{ID}}" data-action="/EDIT ROUTE/{{ID}}" title="Edit" class="lnk-edit btn btn-outline-success" data-title="edit" data-bs-toggle="modal" data-bs-target="#confirm-edit">Edit</a>
+                    <a href="#" data-href="/DELETE ROUTE/{{ID}}" title="Delete" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</a>
+                </div>
+                <hr>
+            </div>
+
+ACCORDION:
+    HTML
+        <div class="accordion" id="ID ELEMENTO PADRE">
+            <div class="accordion-item" id="ID REFERENCIAL">
+                <h2 class="accordion-header" id="ID PARA ABRIR Y CERRAR">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ID CONTROLES" aria-expanded="false" aria-controls="ID CONTROLES">
+                    TEXTO QUE APARECERÁ EN EL ACORDEON SIN ABRIR
+                    </button>
+                </h2>
+                <div id="ID CONTROLES" class="accordion-collapse collapse" aria-labelledby="ID PARA ABRIR Y CERRAR" data-bs-parent="#ID ELEMENTO PADRE">
+                    <div class="accordion-body">
+                    {% for ELEMENT in ELEMENTS %}
+                        <li>{{ELEMENT}}</li>
+                        {% empty %}
+                        <p>TEXTO SI NO HAY NADA</p>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item" id="ID REFERENCIAL">
+                <h2 class="accordion-header" id="ID PARA ABRIR Y CERRAR">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ID CONTROLES" aria-expanded="false" aria-controls="ID CONTROLES">
+                    TEXTO QUE APARECE EN EL ACORDEON SIN ABRIR
+                    </button>
+                </h2>
+                <div id="ID CONTROLES" class="accordion-collapse collapse" aria-labelledby="ID PARA ABRIR Y CERRAR" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                    {% for ELEMENT in ELEMENTS %}
+                        <li>{{ELEMENT}}</li>
+                        {% empty %}
+                        <p>TEXTO SI NO HYA NADA</p>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+FORM EDIT ELEMENTS LIKE TV-SHOWS (WITH SELECT ELEMENTS):
+    HTML
+        <div class='col-12 my-5'>
+            <form method="POST" action="/ROUTE/{{ID}}/FUNCTION" class="row g-3">
+            {% csrf_token %}
+                <div class="row mb-3">
+                    <label for="title" class="col-sm-2 col-form-label">Title</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control text-secondary" name="title" value="{{TITLE}}">
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <label for="title" class="col-sm-2 col-form-label">Network</label>
+                    <div class="col-sm-5">
+                        <select class="form-select text-secondary" aria-label="Default select example" name="network">
+                        <option selected value="{{ID}}">{{NAME}}</option>
+                            {% for ELEMENT in ELEMENTS %}
+                                {% if ELEMENT ID != ACTUAL ELEMENT ID %}
+                                <option value="{{ELEMENT ID}">{{NAME}}</option>
+                                {% else %}
+                                <option value="{{ELEMENT ID}}" disabled>{{NAME}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <label class="col-form-label col-sm-2">Release Date</label>
+                    <div class="col-sm-5">
+                        <input type="date" id="showdate" name="release_date" value="{{EDIT DATE}}" class="mt-1 py-1 px-2 border border-1 rounded text-secondary"></input>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="textarea" class="form-label">Description</label>
+                    <textarea class="form-control text-secondary" id="textarea" name="desc" value="" rows="3">{{DESCRIPTION}}</textarea>
+                </div>
+                
+                <div class="row justify-content-center">
+                    <div class="col-auto"><button type="submit" class="btn btn-outline-success">Update</button></div>
+                    <div class="col-auto"><h5 class="text-end float-end"><a href="/shows" class="btn btn-outline-primary"> Go Back </a></h5></div>
+                </div>
+            </form>
+        </div>
+    
+TABLE ELEMENTS TYPE SHOWS
+    HTML
+        <table class="table table-light table-hover my-5 text-center">
+            <thead>
+                <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Title</th>
+                <th scope="col">Release Date</th>
+                <th scope="col">Network</th>
+                <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="overflow-scroll">
+                {% for ELEMENT in ELEMENTS %}
+                <tr>
+                <td>{{ID}}</td>
+                <td>{{TITLE}}</td>
+                <td>{{DATE}}</td>
+                <td><a href="/ROUTE/{{ID}}">{{NAME}}</td>
+                <td class="d-flex justify-content-center">
+                    <div class="d-inline m-0 p-0"><a href="/ROUTE/{{ID}}" class="btn btn-outline-primary" title="Watch"><i class="fas fa-eye"></i></a></div> GO TO ELEMENT
+                    <div class="d-inline m-0 p-0"><a href="/ROUTE/{{ID}}/FUNCTION" class="btn btn-outline-success" title="Edit"><i class="fas fa-edit"></i></a></div> EDIT ELEMENT IN A NEW VIEW (NOT MODAL)
+                    <div class="d-inline m-0 p-0"><a href="#" data-href="/shows/{{show.id}}/destroy" title="Destroy" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete"><i class="fas fa-backspace"></i></a> DELETE ELEMENT WITH MODAL
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    
+
+

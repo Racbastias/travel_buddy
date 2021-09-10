@@ -1,0 +1,45 @@
+{% extends 'index.html' %}
+{% block title%} Add Book and Review {% endblock %}
+{% block buttons %}<a class="btn btn-outline-primary mx-1" href="/books">Back to the Home</a>{% endblock%}
+
+{% block wallpaper%}style="background-image: url(https://wallpaperaccess.com/full/1692764.jpg); background-size:cover; background-repeat:no-repeat;"{% endblock %}
+
+{% block content %}
+            <div class="row justify-content-between text-start my-3">
+                <div class="col-5"> 
+                    <h2> Add a New Book Title and a Review </h2>
+                    <form class="row g-3 my-3" action="/books/add" method="POST">
+                    {% csrf_token %}
+                        <div class="col-md-12">
+                            <label for="book_title" class="form-label">Book Title</label>
+                            <input type="text" name="title" class="form-control" id="newbooktitle" placeholder="Example: The Shinning" value="" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="author_name" class="form-label">Choose an Author</label>
+                            <select class="form-select selectauthor" id="author_id" name="author" required>
+                                <option selected disabled value="" placeholder="Select one">Select one</option>
+                                {% for author in author %}
+                                <option value="{{author.id}}">{{author.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="authornew" class="form-label">... Or create a new Author</label>
+                            <a href="#" data-href="/new_author" title="newauthor" class="lnk-del btn btn-outline-primary" data-title="newauthor" data-bs-toggle="modal" data-bs-target="#new-author">Add New Author</a>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="review" class="form-label">Review</label>
+                            <textarea name="review" class="form-control" id="newreview" value="" placeholder="A master piece" rows="4" required></textarea>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="stars" class="form-label">Rating (1 to 5)</label>
+                            <input type="number" placeholder="1" name="rating" class="form-control" id="newstars" min="1" max="5" value="" required></input>
+                        </div>
+                        
+                        <div class="col-12 text-end">
+                            <button class="btn btn-outline-success" type="submit">Add Book and Review </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+{% endblock %}

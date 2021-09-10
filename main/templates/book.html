@@ -1,0 +1,59 @@
+{% extends 'index.html' %}
+{% block title%} Book and Reviews {% endblock %}
+{% block buttons %}
+<a class="btn btn-outline-primary mx-1" href="/books">Back to the Home</a>
+<a class="btn btn-outline-success mx-1" href="/books/add">Add a new Book</a>
+{% endblock%}
+
+{% block wallpaper%}style="background-image: url(https://wallpaperaccess.com/full/1692764.jpg); background-size:cover; background-repeat:no-repeat;"{% endblock %}
+
+{% block content %}
+            <div class="row justify-content-between text-start my-3">
+                <h2 class="text-dark fw-bold">{{book.title}}</h2>
+                <p>Author: <span class="fw-bold">{{book.author}}</span></p>
+                <br>
+                <div class="col-6" data-bs-spy="scroll" style="height: 29rem; overflow-y: scroll"> 
+                    {% for review in reviews %}
+                    <div class="card mb-2" style="max-width: 100%">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-md-3 p-3">
+                                <img src="{{review.user.avatar}}" class="img-fluid rounded-start" alt="...">
+                            </div>
+                            <div class="col-md-9">
+                                <div class="card-body">
+                                    <a class="card-title fw-bold" style="text-decoration:none" href="/books/{{review.book.id}}">{{review.book.author}} - {{review.book.title}} </a>
+                                    <p class="rating">Rating: {{review.rating}} <i class="fas fa-star"></i> from 5 </p>
+                                    <p><a href="/users/{{review.user.id}}" class="fw-bold" style="text-decoration:none">{{review.user.nickname}}</a> says: {{review.review}}</p>
+                                    <p class="card-text text-end"><small class="text-muted">Posted on {{review.updated_at}}</small></p>
+                                </div>
+                            </div>
+                            {% if review.user_id == user.id%}
+                            <div class="card-footer text-end bg-transparent">
+                                <a href="#" data-href="/delete/{{review.id}}" title="Delete" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</a>
+                            </div>
+                            {% else %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="col-6">
+                    {% if userid not in book_ids %}
+                    <form class="row g-3" action="/books/{{bookid}}" method="POST">
+                    {% csrf_token %}
+                        <div class="col-md-12">
+                            <label for="review" class="form-label fw-bold">Add a Review to Book ID {{bookid}}</label>
+                            <textarea name="review" class="form-control" id="newreview" value="" placeholder="A master piece" rows="4" required></textarea>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="stars" class="form-label">Rating</label>
+                            <input type="number" placeholder="1" name="rating" class="form-control" id="newstars" min="1" max="5" value="" required></input>
+                        </div>
+                        <div class="col-12 text-end">
+                            <button class="btn btn-outline-success" type="submit">Add Book and Review </button>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+{% endblock %}
