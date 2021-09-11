@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 import bcrypt
 from .decorators import login_required
-from main.models import User, Travel, Traveler
+from main.models import User, Travel
 
 def index(request):
     return redirect('/register')
@@ -15,14 +15,12 @@ def travels(request): # display the dashboard
     user = request.session['user']
     userid = request.session['user']['id']
     traveler = User.objects.get(id=userid)
-    usertravels = Travel.objects.filter(travelinfo = userid)
-    travelers = Traveler.objects.all()
-    travels = Travel.objects.all().order_by('-created_at').exclude(travelinfo_id = userid)
+    usertravels = Travel.objects.filter(traveler = userid)
+    travels = Travel.objects.all().order_by('-created_at').exclude(traveler = userid)
     context = {
         "user": user,
         "traveler": traveler,
         "usertravels": usertravels,
-        "travelers": travelers,
         "travels": travels,
     }
     return render(request, 'main.html', context)
@@ -33,9 +31,9 @@ def join(request, id): # add a user to a trip like traveler
     userid = request.session['user']['id']
     thistravel = Travel.objects.get(id = id)
     
-    traveler = User.objects.get(id=userid)
     
-    thistravel.travelinfo.add(traveler)
+    
+    
     
     messages.success(request, f'You have joined to this trip')
     return redirect(f'/travels/destination/{thistravel.id}')
@@ -68,9 +66,8 @@ def travels_add(request): #create a new travel from session user
             description = description, 
             start_date = start_date,
             end_date = end_date,
-            travelinfo_id = userid
         )
-        
+        newtravel.traveler.add(userid)
         messages.success(request, f'You have added a new Trip!')
         return redirect(f'/travels')
 
@@ -120,7 +117,7 @@ def cancel_id(request, id): # exit from an added travel
     }
     if travel.travelinfo_id == userid:
         travel.delete()
-        messages.error(request, f'Your trip has been deleted')
+        messages.error(request, f'Your cancel this trip')
         return redirect(f'/travels', context)
     
     else:

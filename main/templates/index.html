@@ -35,6 +35,24 @@
                 </div>
             </div>
         </div>
+        <!-- cancel -->
+        <div class="modal fade" id="confirm-cancel" tabindex="-1" aria-labelledby="cancelmodal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cancelmodal">Join</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p> Are you sure to quit this journey? </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <a class="btn btn-outline-success btn-ok">Cancel me!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- modal delete -->
         <div class="modal fade" id="confirm-delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -96,6 +114,11 @@
         </script>
         <script>
             $('#confirm-join').on('show.bs.modal', function(e) {
+                $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+            });
+        </script>
+        <script>
+            $('#confirm-cancel').on('show.bs.modal', function(e) {
                 $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
             });
         </script>

@@ -67,7 +67,7 @@ class Travel(models.Model):
     description = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
-    travelinfo = models.ForeignKey(User, related_name='travels', on_delete=models.CASCADE)
+    traveler = models.ManyToManyField(User, related_name='travels')
     # travelers
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -77,15 +77,3 @@ class Travel(models.Model):
         return f"{self.destination}"
     def __repr__(self):
         return f"{self.destination}"
-
-class Traveler(models.Model):
-    infotraveler = models.ForeignKey(User, related_name='infotravelers', on_delete=models.CASCADE)
-    travels = models.ForeignKey(Travel, related_name='travelers', on_delete=models.CASCADE)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return f"{self.infotraveler}"
-    def __repr__(self):
-        return f"{self.infotraveler}"

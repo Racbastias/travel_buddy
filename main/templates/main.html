@@ -27,7 +27,8 @@
                             <td>{{travel.start_date}}</td>
                             <td>{{travel.end_date}}</td>
                             <td>{{travel.description}}</td>
-                            <td><a href="#" data-href="/shows/{{show.id}}/destroy" title="Destroy" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete"><i class="fas fa-user-times"></i></a></td>
+                            <!-- separar botones si es usuario o creador -->
+                            <td><a href="#" data-href="/cancel/{{travel.id}}" title="Cancel" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-cancel"><i class="fas fa-user-times"></i></a></td>
                             <td><a href="#" data-href="/delete/{{travel.id}}" title="Destroy" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete"><i class="fas fa-calendar-times"></i></a></td>
                             </tr>
                             {% endfor %}
