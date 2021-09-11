@@ -123,9 +123,14 @@ def cancel_id(request, id): # exit from an added travel
     context = {
         "traveler": traveler
     }
+    if travel.creator_id == userid:
+        travel.delete()
+        messages.error(request, f'Your trip has been deleted')
+        return redirect(f'/travels', context)
     
-    travel.travelers.remove(traveler)
-    travel.save()
+    else:
+        travel.travelers.remove(traveler)
+        travel.save()
     
     messages.error(request, f'You cancel this journey')
     return redirect(f'/travels', context)
