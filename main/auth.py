@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.db import IntegrityError
 import bcrypt
-from main.models import User
+from main.models import User, Traveler
 from .decorators import login_required
 
 
@@ -29,6 +29,10 @@ def login(request):
         if  not bcrypt.checkpw(password.encode(), user.password.encode()): 
             messages.error(request, 'User or password does not exist')
             return redirect('/register')
+        
+        Traveler.objects.create(
+            information = user
+        )
         
         request.session['user'] = {
             'id': user.id,
@@ -70,6 +74,10 @@ def register(request):
             messages.error(request, 'This Email already exist')
             return redirect('/register')
             
+        Traveler.objects.create(
+            information = user
+        )
+        
         request.session['user'] ={
             'id': user.id,
             'name': user.name,

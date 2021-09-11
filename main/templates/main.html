@@ -21,15 +21,18 @@
                             </tr>
                         </thead>
                         <tbody class="overflow-scroll">
-                            {% for travel in usertravels %}
+                            {% for travel in mytravels %}
                             <tr>
                             <td><a href="/travels/destination/{{travel.id}}" style="text-decoration:None">{{travel.destination}}</a></td>
                             <td>{{travel.start_date}}</td>
                             <td>{{travel.end_date}}</td>
                             <td>{{travel.description}}</td>
-                            <!-- separar botones si es usuario o creador -->
                             <td><a href="#" data-href="/cancel/{{travel.id}}" title="Cancel" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-cancel"><i class="fas fa-user-times"></i></a></td>
+                            <!-- separar botones si es usuario o creador -->
+                            {% if travel.creator.id != request.session.user.id %}
+                            {% else %}
                             <td><a href="#" data-href="/delete/{{travel.id}}" title="Destroy" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete"><i class="fas fa-calendar-times"></i></a></td>
+                            {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -48,9 +51,9 @@
                             </tr>
                         </thead>
                         <tbody class="overflow-scroll">
-                            {% for othertravel in travels %}
+                            {% for othertravel in othertravels %}
                             <tr>
-                            <td>{{othertravel.travelinfo.nickname}}</td>
+                            <td>{{othertravel.creator.nickname}}</td>
                             <td><a href="/travels/destination/{{othertravel.id}}" style="text-decoration:None">{{othertravel.destination}}</a></td>
                             <td>{{othertravel.start_date}}</td>
                             <td>{{othertravel.end_date}}</td>

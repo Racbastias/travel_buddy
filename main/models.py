@@ -62,12 +62,26 @@ class User(models.Model):
     def __repr__(self):
         return f"{self.nickname}"
 
+
+class Traveler(models.Model):
+    information = models.ForeignKey(User, related_name='travelers', on_delete=models.CASCADE)
+    # travels
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.information}"
+
+    def __repr__(self):
+        return f"{self.information}"
+
 class Travel(models.Model):
     destination = models.CharField(max_length=250)
     description = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
-    traveler = models.ManyToManyField(User, related_name='travels')
+    creator = models.ForeignKey(User, related_name='travels', on_delete=models.CASCADE)
+    travelers = models.ManyToManyField(Traveler, related_name='travels')
     # travelers
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

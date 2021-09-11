@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 import bcrypt
 from .decorators import login_required
-from main.models import User, Travel
+from main.models import User, Travel, Traveler
 
 def index(request):
     return redirect('/register')
@@ -14,14 +14,17 @@ def index(request):
 def travels(request): # display the dashboard
     user = request.session['user']
     userid = request.session['user']['id']
-    traveler = User.objects.get(id=userid)
-    usertravels = Travel.objects.filter(traveler = userid)
-    travels = Travel.objects.all().order_by('-created_at').exclude(traveler = userid)
+    creator = User.objects.get(id=userid)
+    traveler = Traveler.objects.get(id=userid)
+    mytravels = Travel.objects.filter(travelers = userid).order_by('-created_at')
+    othertravels = Travel.objects.all().order_by('-created_at').exclude(creator_id = userid)
+    
     context = {
         "user": user,
+        "creator": creator,
         "traveler": traveler,
-        "usertravels": usertravels,
-        "travels": travels,
+        "mytravels": mytravels,
+        "othertravels": othertravels,
     }
     return render(request, 'main.html', context)
     
@@ -29,14 +32,14 @@ def travels(request): # display the dashboard
 def join(request, id): # add a user to a trip like traveler
     user = request.session['user']
     userid = request.session['user']['id']
-    thistravel = Travel.objects.get(id = id)
+    traveler = Traveler.objects.get(id=userid)
+    travel = Travel.objects.get(id=id)
     
-    
-    
-    
+    travel.travelers.add(traveler)
+    travel.save()
     
     messages.success(request, f'You have joined to this trip')
-    return redirect(f'/travels/destination/{thistravel.id}')
+    return redirect(f'/travels/destination/{travel.id}')
 
 @login_required
 def travels_add(request): #create a new travel from session user
@@ -50,6 +53,7 @@ def travels_add(request): #create a new travel from session user
     else:
         user = request.session['user']
         userid = request.session['user']['id']
+        traveler = Traveler.objects.get(id=userid)
         destination = request.POST['destination']
         description = request.POST['description']
         start_date = request.POST['start_date']
@@ -66,8 +70,11 @@ def travels_add(request): #create a new travel from session user
             description = description, 
             start_date = start_date,
             end_date = end_date,
+            creator_id = userid,
         )
-        newtravel.traveler.add(userid)
+        newtravel.travelers.add(traveler)
+        newtravel.save()
+        
         messages.success(request, f'You have added a new Trip!')
         return redirect(f'/travels')
 
@@ -76,9 +83,10 @@ def travels_id(request, id): # show the travel information
     user = request.session['user']
     userid = request.session['user']['id']
     travel = Travel.objects.get(id=id)
-    travelcreatorid = travel.travelinfo.id
+    creatorid = travel.creator.id
+    owntravel = Traveler.objects.get(id=creatorid)
     travelid = travel.id
-    travelers = Travel.objects.all().exclude(travelinfo_id = travelcreatorid)
+    travelers = Traveler.objects.all().filter(travels = travelid).exclude(id = creatorid)
     
     context = {
         "user": user,
@@ -93,11 +101,11 @@ def delete_id(request, id): # delete a user travel
     user = request.session['user']
     userid = request.session['user']['id']
     travel = Travel.objects.get(id=id)
-    travelinfo_id = travel.travelinfo_id
+    creator = travel.creator_id
     context = {
-        "travelinfo_id": travelinfo_id
+        "creator": creator
     }
-    if travel.travelinfo_id == userid:
+    if creator == userid:
         travel.delete()
         messages.error(request, f'Your trip has been deleted')
         return redirect(f'/travels', context)
@@ -111,15 +119,13 @@ def cancel_id(request, id): # exit from an added travel
     user = request.session['user']
     userid = request.session['user']['id']
     travel = Travel.objects.get(id=id)
-    travelinfo_id = travel.travelinfo_id
+    traveler = Traveler.objects.get(id=userid)
     context = {
-        "travelinfo_id": travelinfo_id
+        "traveler": traveler
     }
-    if travel.travelinfo_id == userid:
-        travel.delete()
-        messages.error(request, f'Your cancel this trip')
-        return redirect(f'/travels', context)
     
-    else:
-        messages.error(request, f'You are not allowed to delete this')
-        return redirect(f'/travels', context)
+    travel.travelers.remove(traveler)
+    travel.save()
+    
+    messages.error(request, f'You cancel this journey')
+    return redirect(f'/travels', context)

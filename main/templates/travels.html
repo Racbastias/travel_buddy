@@ -12,11 +12,11 @@
                     <div class="card mb-2 bg-transparent border-warning rounded-0" style="max-width: 100%">
                         <div class="row g-0 align-items-center">
                             <div class="col-md-3 p-3">
-                                <img src="{{travel.travelinfo.avatar}}" class="img-fluid rounded-start" alt="...">
+                                <img src="{{travel.creator.avatar}}" class="img-fluid rounded-start" alt="...">
                             </div>
                             <div class="col-md-9">
                                 <div class="card-body">
-                                    <p class="card-title">Planed by: <span class="fw-bold">{{travel.travelinfo.nickname}}</span></a>
+                                    <p class="card-title">Planed by: <span class="fw-bold">{{travel.creator.nickname}}</span></a>
                                     <p>Description: <span class="fw-bold">{{travel.description}}</span></p>
                                     <p>Travel Date From: <span class="fw-bold">{{travel.start_date}}</span></p>
                                     <p>Travel Date To: <span class="fw-bold">{{travel.end_date}}</span></p>
@@ -33,7 +33,7 @@
                         <div class="col-12">
                             {% for travelers in travelers %}
                             <ul class="mt-3">
-                                <li>{{travelers.travelinfo.nickname}}</li>
+                                <li>{{travelers.information.nickname}}</li>
                             </ul>
                             {% endfor %}
                         </div>
