@@ -52,6 +52,7 @@
                         </thead>
                         <tbody class="overflow-scroll">
                             {% for othertravel in othertravels %}
+                            {% if othertravel not in traveler.travels.all %}
                             <tr>
                             <td>{{othertravel.creator.nickname}}</td>
                             <td><a href="/travels/destination/{{othertravel.id}}" style="text-decoration:None">{{othertravel.destination}}</a></td>
@@ -59,6 +60,8 @@
                             <td>{{othertravel.end_date}}</td>
                             <td><a href="#" data-href="/join/{{othertravel.id}}" title="Join" class="lnk-del btn btn-outline-success" data-title="join" data-bs-toggle="modal" data-bs-target="#confirm-join"><i class="fas fa-user-check"></i></a></td>
                             </tr>
+                            {% else %}
+                            {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>
