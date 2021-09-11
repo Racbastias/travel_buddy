@@ -14,8 +14,8 @@ def index(request):
 def travels(request): # display the dashboard
     user = request.session['user']
     userid = request.session['user']['id']
-    traveler = Traveler.objects.get(id=userid)
-    usertravels = Travel.objects.filter(travelers = traveler.id)
+    traveler = User.objects.get(id=userid)
+    usertravels = Travel.objects.filter(travelinfo = userid)
     travelers = Traveler.objects.all()
     travels = Travel.objects.all().order_by('-created_at').exclude(travelinfo_id = userid)
     context = {
@@ -33,13 +33,9 @@ def join(request, id): # add a user to a trip like traveler
     userid = request.session['user']['id']
     thistravel = Travel.objects.get(id = id)
     
-    traveler = Traveler.objects.create(
-        infotraveler_id = userid,
-        travels_id = thistravel.id
-    )
+    traveler = User.objects.get(id=userid)
     
-    thistravel.travelers.add(traveler)
-    thistravel.save()
+    thistravel.travelinfo.add(traveler)
     
     messages.success(request, f'You have joined to this trip')
     return redirect(f'/travels/destination/{thistravel.id}')
@@ -56,11 +52,16 @@ def travels_add(request): #create a new travel from session user
     else:
         user = request.session['user']
         userid = request.session['user']['id']
-        traveler = Traveler.objects.get(id=userid)
         destination = request.POST['destination']
         description = request.POST['description']
         start_date = request.POST['start_date']
         end_date = request.POST['end_date']
+        
+        errors = Travel.objects.basicvalidator(request.POST)
+        if len(errors) > 0:
+            for key, mensaje_de_error in errors.items():
+                messages.error(request, mensaje_de_error)
+            return redirect('/travels/add')
         
         newtravel = Travel.objects.create(
             destination = destination,
@@ -69,8 +70,6 @@ def travels_add(request): #create a new travel from session user
             end_date = end_date,
             travelinfo_id = userid
         )
-        newtravel.travelers.add(traveler)
-        newtravel.save()
         
         messages.success(request, f'You have added a new Trip!')
         return redirect(f'/travels')

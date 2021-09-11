@@ -30,9 +30,9 @@ class TravelManager(models.Manager):
         start_date = postData['start_date']
         errors = {}
 
-        if len(postData['destination']) == "":
+        if len(postData['destination']) < 1:
             errors['destination'] = "The destination must not be empty";
-        if len(postData['description']) == "":
+        if len(postData['description']) < 1:
             errors['description'] = "The description must not be empty";
         if (postData['start_date']) < today:
             errors["start_date"] = "The trip can't start before today!"
@@ -51,7 +51,7 @@ class User(models.Model):
     email = models.EmailField(max_length=255, unique=True)
     avatar = models.URLField(default='https://toppng.com/uploads/preview/roger-berry-avatar-placeholder-11562991561rbrfzlng6h.png')
     password = models.CharField(max_length=70)
-    
+    # travels
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
@@ -68,12 +68,11 @@ class Travel(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     travelinfo = models.ForeignKey(User, related_name='travels', on_delete=models.CASCADE)
-    # authors
-    # reviews
-    
+    # travelers
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = TravelManager()
+    
     def __str__(self):
         return f"{self.destination}"
     def __repr__(self):
