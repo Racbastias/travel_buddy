@@ -17,23 +17,22 @@
 
     <body class="p-0 m-0" {% block wallpaper%}style="background-image: url(https://img.gta5-mods.com/q95/images/2018-honda-cb500x/b28224-20180720205404_1.jpg); background-size:cover; background-repeat:repeat;"{% endblock %}>
         <!-- modals -->
-        <!-- new author -->
-        <div class="modal fade" id="new-author" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!-- join -->
+        <div class="modal fade" id="confirm-join" tabindex="-1" aria-labelledby="joinmodal" aria-hidden="true">
             <div class="modal-dialog">
-                <form class="modal-content" method="POST" action="/new_author">
-                    {% csrf_token%}
+                <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add new author</h5>
+                        <h5 class="modal-title" id="joinmodal">Join</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <label for="book_title" class="form-label">Author name</label>
-                        <input type="text" name="newauthor" class="form-control" id="newauthorname" placeholder="Example: Stephen King" value="" required>
+                        <p> Are you sure to join to this travel? </p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
-                        <input type="submit" class="btn btn-outline-success btn-ok">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <a class="btn btn-outline-success btn-ok">Join me!</a>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
         <!-- modal delete -->
@@ -92,6 +91,11 @@
         <!-- delete modal -->
         <script>
             $('#confirm-delete').on('show.bs.modal', function(e) {
+                $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+            });
+        </script>
+        <script>
+            $('#confirm-join').on('show.bs.modal', function(e) {
                 $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
             });
         </script>

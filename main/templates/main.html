@@ -9,13 +9,15 @@
                 <hr>
                 <div class='col-12'>
                     <h1 class='fs-1 my-3'>Your Trip Schedules</h1>
-                    <table class="table table-light table-hover my-5 text-center">
+                    <table class="table table-transparent table-hover my-5 text-center">
                         <thead>
                             <tr>
                             <th scope="col">Destination</th>
                             <th scope="col">Travel Start Date</th>
                             <th scope="col">Travel End Date</th>
                             <th scope="col">Plan</th>
+                            <th scope="col">Cancel</th>
+                            <th scope="col">Delete</th>
                             </tr>
                         </thead>
                         <tbody class="overflow-scroll">
@@ -24,6 +26,9 @@
                             <td><a href="/travels/destination/{{travel.id}}" style="text-decoration:None">{{travel.destination}}</a></td>
                             <td>{{travel.start_date}}</td>
                             <td>{{travel.end_date}}</td>
+                            <td>{{travel.description}}</td>
+                            <td><a href="#" data-href="/shows/{{show.id}}/destroy" title="Destroy" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete"><i class="fas fa-user-times"></i></a></td>
+                            <td><a href="#" data-href="/delete/{{travel.id}}" title="Destroy" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete"><i class="fas fa-calendar-times"></i></a></td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -31,7 +36,7 @@
                 </div>
                 <div class='col-12'>
                     <h1 class='fs-1 my-3'>Other User's Travel Plans</h1>
-                    <table class="table table-light table-hover my-5 text-center">
+                    <table class="table table-transparent table-hover my-5 text-center">
                         <thead>
                             <tr>
                             <th scope="col">Name</th>
@@ -44,11 +49,11 @@
                         <tbody class="overflow-scroll">
                             {% for othertravel in travels %}
                             <tr>
-                            <td>{{othertravel.travelinfo.nickname}}<td>
+                            <td>{{othertravel.travelinfo.nickname}}</td>
                             <td><a href="/travels/destination/{{othertravel.id}}" style="text-decoration:None">{{othertravel.destination}}</a></td>
                             <td>{{othertravel.start_date}}</td>
                             <td>{{othertravel.end_date}}</td>
-                            <td><a href="#" data-href="/travels" title="join" class="lnk-del btn btn-outline-primary" data-title="join" data-bs-toggle="modal" data-bs-target="#join">Join</a><td>
+                            <td><a href="#" data-href="/join/{{othertravel.id}}" title="Join" class="lnk-del btn btn-outline-success" data-title="join" data-bs-toggle="modal" data-bs-target="#confirm-join"><i class="fas fa-user-check"></i></a></td>
                             </tr>
                             {% endfor %}
                         </tbody>
